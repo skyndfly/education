@@ -1,0 +1,37 @@
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
+    ports:
+      - "8004:80"
+    networks:
+      - education
+    depends_on:
+      - php
+  php:
+    build: docker/.
+    volumes:
+      - .:/var/www/html
+    networks:
+      - education
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: education
+    networks:
+      - education
+networks:
+  education:
+volumes:
+  postgres_data:
