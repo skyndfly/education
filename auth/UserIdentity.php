@@ -20,7 +20,7 @@ class UserIdentity implements IdentityInterface
 
 
     /**
-     * @param int|string $id
+     * @param int $id
      */
     public static function findIdentity($id): IdentityInterface|static|null
     {

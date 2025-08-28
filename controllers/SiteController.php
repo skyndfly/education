@@ -12,7 +12,7 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -36,7 +36,7 @@ class SiteController extends Controller
     }
 
 
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
@@ -48,12 +48,12 @@ class SiteController extends Controller
             ],
         ];
     }
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
     }
 
-    public function actionLogin()
+    public function actionLogin(): Response|string
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -70,14 +70,14 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionLogout()
+    public function actionLogout(): Response
     {
         Yii::$app->user->logout();
 
         return $this->goHome();
     }
 
-    public function actionContact()
+    public function actionContact(): Response|string
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
@@ -89,7 +89,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-    public function actionAbout()
+    public function actionAbout(): string
     {
         return $this->render('about');
     }

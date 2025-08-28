@@ -22,7 +22,7 @@ class UserRepository extends BaseRepository
             ->from(self::TABLE_NAME)
             ->where(['id' => $id])
             ->one();
-        if (!$result) {
+        if ($result === false) {
             return null;
         }
         return $this->mapToDto($result);
@@ -34,7 +34,7 @@ class UserRepository extends BaseRepository
             ->from(self::TABLE_NAME)
             ->where(['username' => $username])
             ->one();
-        if (!$result) {
+        if ($result === false) {
             return null;
         }
         return $this->mapToDto($result);
@@ -44,7 +44,7 @@ class UserRepository extends BaseRepository
      * @throws DateMalformedStringException
      * @throws Exception
      */
-    public function store(UserStoreDto $storeDto): UserIdentityDto
+    public function store(UserStoreDto $storeDto): ?UserIdentityDto
     {
         $this->getCommand()
             ->insert(
