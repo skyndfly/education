@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace app\commands;
 
+use app\auth\enums\UserTypeEnum;
 use app\config\EnvRegistry;
 use app\repositories\User\dto\UserInfoDto;
 use app\repositories\User\dto\UserStoreDto;
@@ -39,6 +40,7 @@ class RbacController extends Controller
             $userDto = new UserStoreDto(
                 username: EnvRegistry::getOwnerLogin(),
                 password: EnvRegistry::getOwnerPassword(),
+                type: UserTypeEnum::OWNER,
                 userInfo: $userInfo
             );
             $user = $this->userCreateService->execute($userDto);

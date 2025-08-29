@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace app\repositories\User;
 
 use app\auth\dto\UserIdentityDto;
+use app\auth\enums\UserTypeEnum;
 use DateMalformedStringException;
 use DateTimeImmutable;
 use app\repositories\BaseRepository;
@@ -55,6 +56,7 @@ class UserRepository extends BaseRepository
                     'password_hash' => Yii::$app->security->generatePasswordHash($dto->password),
                     'first_name' => $dto->userInfo->firstName,
                     'name' => $dto->userInfo->name,
+                    'type' => $dto->type->value,
                     'last_name' => $dto->userInfo->lastName,
                     'birth_day' => (new DateTimeImmutable($dto->userInfo->birthDate))->format('Y-m-d'),
                     'number_phone' => $dto->userInfo->numberPhone,
@@ -68,19 +70,20 @@ class UserRepository extends BaseRepository
      * @throws DateMalformedStringException
      * @throws Exception
      */
-    public function store(UserStoreDto $storeDto): ?UserIdentityDto
+    public function store(UserStoreDto $dto): ?UserIdentityDto
     {
         $this->getCommand()
             ->insert(
                 self::TABLE_NAME,
                 [
-                    'username' => $storeDto->username,
-                    'password_hash' => Yii::$app->security->generatePasswordHash($storeDto->password),
-                    'first_name' => $storeDto->userInfo->firstName,
-                    'name' => $storeDto->userInfo->name,
-                    'last_name' => $storeDto->userInfo->lastName,
-                    'birth_day' => (new DateTimeImmutable($storeDto->userInfo->birthDate))->format('Y-m-d'),
-                    'number_phone' => $storeDto->userInfo->numberPhone,
+                    'username' => $dto->username,
+                    'password_hash' => Yii::$app->security->generatePasswordHash($dto->password),
+                    'first_name' => $dto->userInfo->firstName,
+                    'name' => $dto->userInfo->name,
+                    'type' => $dto->type->value,
+                    'last_name' => $dto->userInfo->lastName,
+                    'birth_day' => (new DateTimeImmutable($dto->userInfo->birthDate))->format('Y-m-d'),
+                    'number_phone' => $dto->userInfo->numberPhone,
                 ]
             )
             ->execute();
@@ -95,6 +98,7 @@ class UserRepository extends BaseRepository
      *     password_hash: string,
      *     created_at: string,
      *     updated_at: string,
+     *     type: string,
      *     first_name: string,
      *     name: string,
      *     last_name: string,
@@ -120,6 +124,7 @@ class UserRepository extends BaseRepository
             password: $data['password_hash'],
             createdAt: $data['created_at'],
             updatedAt: $data['updated_at'],
+            type: UserTypeEnum::from($data['type']),
             userInfoDto: $userInfo,
             accessToken: $data['access_token'],
             authKey: $data['auth_key'],
