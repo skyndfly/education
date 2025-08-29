@@ -7,7 +7,10 @@ use app\config\EnvRegistry;
 use app\repositories\User\dto\UserInfoDto;
 use app\repositories\User\dto\UserStoreDto;
 use app\services\User\UserCreateService;
+use Throwable;
+use Yii;
 use yii\console\Controller;
+use yii\helpers\Console;
 
 class RbacController extends Controller
 {
@@ -25,18 +28,35 @@ class RbacController extends Controller
 
     public function actionInit(): void
     {
-        $userInfo = new UserInfoDto(
-            firstName: EnvRegistry::getOwnerFirstName(),
-            name: EnvRegistry::getOwnerName(),
-            lastName: EnvRegistry::getOwnerLastName(),
-            birthDate: '27-11-1996',
-            numberPhone: EnvRegistry::getOwnerPhoneNumber()
-        );
-        $userDto = new UserStoreDto(
-            username: EnvRegistry::getOwnerLogin(),
-            password: EnvRegistry::getOwnerPassword(),
-            userInfo: $userInfo
-        );
-        $this->userCreateService->execute($userDto);
+        try {
+            $userInfo = new UserInfoDto(
+                firstName: EnvRegistry::getOwnerFirstName(),
+                name: EnvRegistry::getOwnerName(),
+                lastName: EnvRegistry::getOwnerLastName(),
+                birthDate: '27-11-1996',
+                numberPhone: EnvRegistry::getOwnerPhoneNumber()
+            );
+            $userDto = new UserStoreDto(
+                username: EnvRegistry::getOwnerLogin(),
+                password: EnvRegistry::getOwnerPassword(),
+                userInfo: $userInfo
+            );
+            $user = $this->userCreateService->execute($userDto);
+
+            $auth = Yii::$app->getAuthManager();
+
+            $owner = $auth->createRole('owner');
+            $auth->add($owner);
+
+            $manager = $auth->createRole('manager');
+            $auth->add($manager);
+
+            $auth->assign($owner, $user->id);
+
+            Console::confirm('Владелец и базовые роли созданы');
+        }catch (Throwable $e){
+            Console::error('Ошибка инициализации:');
+            Console::error($e->getMessage());
+        }
     }
 }

@@ -42,6 +42,30 @@ class UserRepository extends BaseRepository
 
     /**
      * @throws DateMalformedStringException
+     * @throws \yii\base\Exception
+     * @throws Exception
+     */
+    public function updateUser(UserStoreDto $dto): UserIdentityDto
+    {
+        $this->getCommand()
+            ->update(
+                self::TABLE_NAME,
+                [
+                    'username' => $dto->username,
+                    'password_hash' => Yii::$app->security->generatePasswordHash($dto->password),
+                    'first_name' => $dto->userInfo->firstName,
+                    'name' => $dto->userInfo->name,
+                    'last_name' => $dto->userInfo->lastName,
+                    'birth_day' => (new DateTimeImmutable($dto->userInfo->birthDate))->format('Y-m-d'),
+                    'number_phone' => $dto->userInfo->numberPhone,
+                ],
+                ['username' => $dto->username]
+            )->execute();
+       return $this->getByUsername($dto->username);
+    }
+
+    /**
+     * @throws DateMalformedStringException
      * @throws Exception
      */
     public function store(UserStoreDto $storeDto): ?UserIdentityDto

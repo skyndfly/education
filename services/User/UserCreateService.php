@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace app\services\User;
 
+use app\auth\dto\UserIdentityDto;
 use app\repositories\User\dto\UserStoreDto;
 use app\repositories\User\UserRepository;
 use DateMalformedStringException;
@@ -22,11 +23,15 @@ class UserCreateService
      * @throws DateMalformedStringException
      * @throws Exception
      */
-    public function execute(UserStoreDto $dto): void
+    public function execute(UserStoreDto $dto): ?UserIdentityDto
     {
         try {
-            $this->userRepository->store($dto);
+            if ($this->userRepository->getByUsername($dto->username)) {
+                return $this->userRepository->updateUser($dto);
+            }
+            $user = $this->userRepository->store($dto);
             //TODO добавить лог таблицу для пользователей
+            return $user;
         } catch (Exception $e) {
             Yii::error([
                 'type' => 'UserCreateService',
