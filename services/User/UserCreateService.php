@@ -7,6 +7,7 @@ use app\auth\dto\UserIdentityDto;
 use app\repositories\User\dto\UserStoreDto;
 use app\repositories\User\UserRepository;
 use DateMalformedStringException;
+use DomainException;
 use Yii;
 use yii\db\Exception;
 
@@ -26,8 +27,8 @@ class UserCreateService
     public function execute(UserStoreDto $dto): ?UserIdentityDto
     {
         try {
-            if ($this->userRepository->getByUsername($dto->username)) {
-                return $this->userRepository->updateUser($dto);
+            if ($this->userRepository->getByUsername($dto->username) !== null) {
+                throw new DomainException('Пользователь существует');
             }
             $user = $this->userRepository->store($dto);
             //TODO добавить лог таблицу для пользователей

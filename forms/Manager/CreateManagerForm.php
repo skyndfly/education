@@ -54,7 +54,7 @@ class CreateManagerForm extends Model
         return new UserStoreDto(
             username: $this->username,
             password: $this->password,
-            type: UserTypeEnum::MANGER,
+            type: UserTypeEnum::MANAGER,
             userInfo: $userInfoDto                
         );
     }

@@ -3,6 +3,7 @@
 
 use app\forms\Manager\CreateManagerForm;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 ?>
 
@@ -18,7 +19,9 @@ use yii\widgets\ActiveForm;
     <?= $form->field($formModel, 'name')->textInput() ?>
     <?= $form->field($formModel, 'last_name')->textInput() ?>
     <?= $form->field($formModel, 'birth_day')->input('date') ?>
-    <?= $form->field($formModel, 'number_phone')->textInput() ?>
-    <button class="btn-outline-success" type="submit">Добавить</button>
+    <?= $form->field($formModel, 'number_phone')->widget(MaskedInput::class, [
+        'mask' => '+7999-999-9999',
+    ]) ?>
+    <button class="btn btn-outline-success" type="submit">Добавить</button>
     <?php $form = ActiveForm::end(); ?>
 </section>
