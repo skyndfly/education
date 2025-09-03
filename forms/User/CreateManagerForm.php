@@ -1,6 +1,6 @@
 <?php
 
-namespace app\forms\Manager;
+namespace app\forms\User;
 
 use app\auth\enums\UserTypeEnum;
 use app\repositories\User\dto\UserInfoDto;

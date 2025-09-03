@@ -1,7 +1,7 @@
 <?php
 /** @var CreateManagerForm $formModel */
 
-use app\forms\Manager\CreateManagerForm;
+use app\forms\User\CreateManagerForm;
 use yii\widgets\ActiveForm;
 use yii\widgets\MaskedInput;
 

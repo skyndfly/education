@@ -5,12 +5,14 @@ namespace app\repositories\User;
 
 use app\auth\dto\UserIdentityDto;
 use app\auth\enums\UserTypeEnum;
+use app\repositories\User\dto\UserSearchDto;
 use DateMalformedStringException;
 use DateTimeImmutable;
 use app\repositories\BaseRepository;
 use app\repositories\User\dto\UserInfoDto;
 use app\repositories\User\dto\UserStoreDto;
 use Yii;
+use yii\base\Exception as ExceptionAlias;
 use yii\db\Exception;
 
 class UserRepository extends BaseRepository
@@ -43,7 +45,7 @@ class UserRepository extends BaseRepository
 
     /**
      * @throws DateMalformedStringException
-     * @throws \yii\base\Exception
+     * @throws ExceptionAlias
      * @throws Exception
      */
     public function updateUser(UserStoreDto $dto): UserIdentityDto
@@ -63,12 +65,12 @@ class UserRepository extends BaseRepository
                 ],
                 ['username' => $dto->username]
             )->execute();
-       return $this->getByUsername($dto->username);
+        return $this->getByUsername($dto->username);
     }
 
     /**
      * @throws DateMalformedStringException
-     * @throws Exception
+     * @throws Exception|ExceptionAlias
      */
     public function store(UserStoreDto $dto): ?UserIdentityDto
     {
@@ -90,6 +92,35 @@ class UserRepository extends BaseRepository
         return $this->getById((int) Yii::$app->db->getLastInsertID());
     }
 
+    /**
+     * @return UserIdentityDto[]
+     */
+    public function getAllAndSearch(
+        UserSearchDto $dto
+    ): array {
+        $query = $this->getQuery()
+            ->from(self::TABLE_NAME)
+            ->where(['!=', 'type', UserTypeEnum::OWNER->value])
+            ->andWhere(['type' => $dto->type->value]);
+
+
+        if (!empty($dto->username)) {
+            $query->andWhere(['like', 'username', $dto->username]);
+        }
+        if (!empty($dto->fio)) {
+            $query->andWhere([
+                'or',
+                ['like', 'first_name', $dto->fio],
+                ['like', 'name', $dto->fio],
+                ['like', 'last_name', $dto->fio],
+            ]);
+        }
+        $all = $query->all();
+        return array_map(
+            fn($item) => $this->mapToDto($item),
+            $all
+        );
+    }
 
     /**
      * @param array{
