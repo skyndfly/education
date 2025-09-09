@@ -108,12 +108,8 @@ class UserRepository extends BaseRepository
             $query->andWhere(['like', 'username', $dto->username]);
         }
         if (!empty($dto->fio)) {
-            $query->andWhere([
-                'or',
-                ['like', 'first_name', $dto->fio],
-                ['like', 'name', $dto->fio],
-                ['like', 'last_name', $dto->fio],
-            ]);
+            $lower = mb_strtolower($dto->fio);
+            $query->andWhere(['like', "LOWER(CONCAT_WS(' ', first_name, name ,last_name))", $lower]);
         }
         $all = $query->all();
         return array_map(
