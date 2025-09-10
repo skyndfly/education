@@ -3,70 +3,50 @@
 namespace app\ui\gridTable\User;
 
 use app\auth\dto\UserIdentityDto;
-use app\ui\gridTable\ColumnDto;
+use app\ui\gridTable\AbstractGridTable;
+use app\ui\gridTable\GridColumn;
 
-class ManagerGridTable
+class ManagerGridTable extends AbstractGridTable
 {
-    public const string USERNAME = 'username';
-    public const string FIO = 'name';
-    public const string TYPE = 'type';
-    public const string CREATED_AT = 'createdAt';
-    public const string ID = 'id';
+    #[GridColumn('Логин')]
+    public string $username;
 
-    public static function get(string $column): array
+    #[GridColumn('ФИО', formatter: 'fullName')]
+    public string $name;
+
+    #[GridColumn('Тип', formatter: 'typeValue')]
+    public string $type;
+
+    #[GridColumn('Дата создания')]
+    public string $createdAt;
+
+    #[GridColumn('ID')]
+    public int $id;
+
+    #[GridColumn('Действия', formatter: 'actionButtons')]
+    public string $actions;
+
+    public static function fullName(UserIdentityDto $model): string
     {
-        return match ($column) {
-            self::USERNAME => new ColumnDto(
-                attribute: self::USERNAME,
-                label: 'Логин',
-                callback: function (UserIdentityDto $model) {
-                    return $model->username;
-                }
-            )->toArray(),
-            self::FIO => new ColumnDto(
-                attribute: self::FIO,
-                label: 'ФИО',
-                callback: function (UserIdentityDto $model) {
-                    return sprintf(
-                        '%s %s %s',
-                        $model->userInfoDto->firstName,
-                        $model->userInfoDto->name,
-                        $model->userInfoDto->lastName
-                    );
-                }
-            )->toArray(),
-            self::TYPE => new ColumnDto(
-                attribute: self::TYPE,
-                label: 'Тип',
-                callback: function (UserIdentityDto $model) {
-                    return $model->type->value;
-                }
-            )->toArray(),
-            self::CREATED_AT => new ColumnDto(
-                attribute: self::CREATED_AT,
-                label: 'Дата создания',
-                callback: function (UserIdentityDto $model) {
-                    return $model->createdAt;
-                }
-            )->toArray(),
-            self::ID => new ColumnDto(
-                attribute: self::ID,
-                label: 'ID',
-                callback: function (UserIdentityDto $model) {
-                    return $model->id;
-                }
-            )->toArray(),
-        };
+        return sprintf(
+            '%s %s %s',
+            $model->userInfoDto->firstName,
+            $model->userInfoDto->name,
+            $model->userInfoDto->lastName
+        );
     }
 
-    public static function getColumns(): array
+    public static function typeValue(UserIdentityDto $model): string
     {
-        return [
-          self::get(self::USERNAME),
-          self::get(self::FIO),
-          self::get(self::TYPE),
-          self::get(self::CREATED_AT),
-          self::get(self::ID),
-        ];
+        return $model->type->value;
+    }
+    public static function actionButtons(UserIdentityDto $model): string
+    {
+        $id = $model->id;
+
+        return sprintf(
+            '<a href="/login-as-manager?id=%s" class="btn btn-sm btn-primary">Отследить</a>',
+            $id
+        );
     }
 }
