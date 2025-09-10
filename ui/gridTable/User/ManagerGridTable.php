@@ -17,10 +17,10 @@ class ManagerGridTable extends AbstractGridTable
     #[GridColumn('Тип', formatter: 'typeValue')]
     public string $type;
 
-    #[GridColumn('Дата создания')]
+    #[GridColumn('Дата создания', sortable: true)]
     public string $createdAt;
 
-    #[GridColumn('ID')]
+    #[GridColumn('ID', sortable: true)]
     public int $id;
 
     #[GridColumn('Действия', formatter: 'actionButtons')]
@@ -40,6 +40,7 @@ class ManagerGridTable extends AbstractGridTable
     {
         return $model->type->value;
     }
+
     public static function actionButtons(UserIdentityDto $model): string
     {
         $id = $model->id;

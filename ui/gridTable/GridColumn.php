@@ -9,8 +9,8 @@ class GridColumn
 {
     public function __construct(
         public string $label,
-        public ?string $formatter = null
-    )
-    {
+        public ?string $formatter = null,
+        public bool $sortable = false
+    ) {
     }
 }

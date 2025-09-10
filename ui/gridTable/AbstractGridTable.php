@@ -7,6 +7,7 @@ use ReflectionProperty;
 
 abstract class AbstractGridTable
 {
+    /** Возвращает конфигурацию колонок для GridView */
     public static function getColumns(): array
     {
         $ref = new ReflectionClass(static::class);
@@ -27,8 +28,31 @@ abstract class AbstractGridTable
                 'label' => $meta->label,
                 'value' => $callback,
                 'format' => 'raw',
+                //                'enableSorting' => $meta->sortable,
+                //                'sortAttribute' => $attributeName,
+                //                'sortAttribute' => $meta->sortAttribute ?? $attributeName,
             ];
         }
         return $columns;
+    }
+
+    /** Возвращает массив атрибутов, которые можно сортировать */
+    public static function getSortAttributes(): array
+    {
+        $ref = new ReflectionClass(static::class);
+        $properties = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
+
+        $sortAttributes = [];
+        foreach ($properties as $prop) {
+            $attrs = $prop->getAttributes(GridColumn::class);
+
+            /** @var GridColumn $meta */
+            $meta = $attrs[0]->newInstance();
+            if ($meta->sortable) {
+                $sortAttributes[] = $prop->getName();
+            }
+        }
+
+        return $sortAttributes;
     }
 }

@@ -2,9 +2,10 @@
 
 namespace app\services\User;
 
+use app\auth\dto\UserIdentityDto;
 use app\repositories\User\dto\UserSearchDto;
 use app\repositories\User\UserRepository;
-use yii\data\ArrayDataProvider;
+
 
 class UserPaginateService
 {
@@ -15,22 +16,11 @@ class UserPaginateService
         $this->userRepository = $userRepository;
     }
 
-    public function execute(UserSearchDto $dto): ArrayDataProvider {
-        return new ArrayDataProvider([
-            'allModels' => $this->userRepository->getAllAndSearch($dto),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-            'sort' => [
-                'attributes' => [
-                    'id',
-                    'createdAt',
-                ],
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ]
-        ]);
-
+    /**
+     * @return UserIdentityDto[]
+     */
+    public function execute(UserSearchDto $dto): array
+    {
+        return $this->userRepository->getAllAndSearch($dto);
     }
 }

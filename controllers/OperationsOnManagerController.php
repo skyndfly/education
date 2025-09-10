@@ -9,9 +9,10 @@ use app\forms\User\CreateManagerForm;
 use app\repositories\User\dto\UserSearchDto;
 use app\services\User\UserCreateService;
 use app\services\User\UserPaginateService;
+use app\ui\gridTable\GridFactory;
+use app\ui\gridTable\User\ManagerGridTable;
 use Exception;
 use Yii;
-use yii\data\ArrayDataProvider;
 use yii\web\Response;
 
 class OperationsOnManagerController extends BaseOwnerController
@@ -37,15 +38,16 @@ class OperationsOnManagerController extends BaseOwnerController
         $filter = new ManagerFilter();
         $filter->load($qet);
 
-        $dataProvider = $this->userPaginateService->execute(
+        $models = $this->userPaginateService->execute(
             new UserSearchDto(
                 type: UserTypeEnum::MANAGER,
                 username: $filter->username,
                 fio: $filter->fio,
             )
         );
-        return $this->render('index',[
-            'dataProvider' => $dataProvider,
+        $grid = GridFactory::createGrid($models, ManagerGridTable::class);
+        return $this->render('index', [
+            'grid' => $grid,
             'filterModel' => $filter,
         ]);
     }
