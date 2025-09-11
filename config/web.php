@@ -12,7 +12,7 @@ $config = [
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'request' => [
@@ -55,8 +55,19 @@ $config = [
                 'GET operations-on-manager' => 'operations-on-manager/index',
                 'GET operations-on-manager/create' => 'operations-on-manager/create',
                 'POST operations-on-manager/create' => 'operations-on-manager/store',
+
                 'GET users' => 'users/index',
+                'POST users/impersonate' => 'users/login-as-user',
             ],
+        ],
+
+    ],
+    'controllerMap' => [
+        'operations-on-manager' => [
+            'class' => app\controllers\Owner\OperationsOnManagerController::class,
+        ],
+        'users' => [
+            'class' => app\controllers\Owner\UsersController::class,
         ],
     ],
     'params' => $params,

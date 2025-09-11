@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers\abstracts;
+namespace app\controllers\Owner\abstracts;
 
 use Yii;
 use yii\filters\AccessControl;

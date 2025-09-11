@@ -117,7 +117,12 @@ class UserRepository extends BaseRepository
             $all
         );
     }
-    public function getAll(): array {
+
+    /**
+     * @return UserIdentityDto[]
+     */
+    public function getAll(): array
+    {
         return array_map(
             fn($item) => $this->mapToDto($item),
             $this->getQuery()
