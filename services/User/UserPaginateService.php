@@ -21,6 +21,6 @@ class UserPaginateService
      */
     public function execute(UserSearchDto $dto): array
     {
-        return $this->userRepository->getAllAndSearch($dto);
+        return $this->userRepository->getAllManagerAndSearch($dto);
     }
 }

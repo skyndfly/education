@@ -1,6 +1,7 @@
 <nav>
     <ul id="menu">
         <li><a href="/operations-on-manager">Менеджеры по продажам</a></li>
+        <li><a href="/users">Пользователи</a></li>
         <li><a href="#">Demo</a></li>
         <li><a href="#">Archive</a></li>
         <li><a href="#">Random</a></li>

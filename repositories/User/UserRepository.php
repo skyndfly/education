@@ -95,7 +95,7 @@ class UserRepository extends BaseRepository
     /**
      * @return UserIdentityDto[]
      */
-    public function getAllAndSearch(
+    public function getAllManagerAndSearch(
         UserSearchDto $dto
     ): array {
         $query = $this->getQuery()
@@ -115,6 +115,14 @@ class UserRepository extends BaseRepository
         return array_map(
             fn($item) => $this->mapToDto($item),
             $all
+        );
+    }
+    public function getAll(): array {
+        return array_map(
+            fn($item) => $this->mapToDto($item),
+            $this->getQuery()
+                ->from(self::TABLE_NAME)
+                ->all()
         );
     }
 

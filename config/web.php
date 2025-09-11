@@ -55,6 +55,7 @@ $config = [
                 'GET operations-on-manager' => 'operations-on-manager/index',
                 'GET operations-on-manager/create' => 'operations-on-manager/create',
                 'POST operations-on-manager/create' => 'operations-on-manager/store',
+                'GET users' => 'users/index',
             ],
         ],
     ],
