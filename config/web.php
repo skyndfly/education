@@ -58,6 +58,7 @@ $config = [
 
                 'GET users' => 'users/index',
                 'POST users/impersonate' => 'users/login-as-user',
+                'POST site/return-to-user' => 'site/return-to-user',
             ],
         ],
 

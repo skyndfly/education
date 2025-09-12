@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\auth\UserIdentity;
+use app\repositories\User\UserRepository;
+use DomainException;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -12,6 +15,18 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    private UserRepository $userRepository;
+
+    public function __construct(
+        $id,
+        $module,
+        UserRepository $userRepository,
+        $config = []
+    ) {
+        parent::__construct($id, $module, $config);
+        $this->userRepository = $userRepository;
+    }
+
     public function behaviors(): array
     {
         return [
@@ -48,6 +63,7 @@ class SiteController extends Controller
             ],
         ];
     }
+
     public function actionIndex(): string
     {
         return $this->render('index');
@@ -89,8 +105,29 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
     public function actionAbout(): string
     {
         return $this->render('about');
+    }
+
+
+    public function actionReturnToUser()
+    {
+        $post = Yii::$app->request->post();
+        if ($post['id'] === null) {
+            throw new DomainException('Необходимо передать id');
+        }
+        $user = $this->userRepository->getById($post['id']);
+        if ($user === null) {
+            throw new DomainException('Пользователь не найден');
+        }
+        $path = Yii::$app->getSession()->get('original_path');
+        Yii::$app->session->remove('original_user_id');
+        Yii::$app->session->remove('original_path');
+        Yii::$app->user->switchIdentity(new UserIdentity($user));
+
+        return $this->redirect($path ?? '/');
+
     }
 }

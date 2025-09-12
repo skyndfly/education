@@ -30,7 +30,9 @@ class BaseOwnerController extends Controller
             ]
         ];
     }
-
+    /**
+     * return UserIdentityDto
+     */
     public function getIdentity(): IdentityInterface
     {
         return Yii::$app->user->identity;
